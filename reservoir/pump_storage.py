@@ -22,17 +22,17 @@ class PumpStorage:
         min_volume = sorted_data["volumes"].min()
         return int(min_volume)
 
-    def maxVolume(self):
+    def max_volume(self):
         sorted_data = self.df_new.sort_values(["volumes"])
         max_volume = sorted_data["volumes"].max()
         return int(max_volume)
 
-    def plotVolume(self):
+    def plot_volume(self):
         ax = plt.gca()
         self.df_new.plot(x="hours", y="volumes")
         plt.show()
 
-    def findPeaks(self):
+    def find_peaks(self):
         if self.df_new["max"][self.df_new["max"].notnull()].iloc[0] < \
                 self.df_new["min"][self.df_new["min"].notnull()].iloc[0]:
             for i in range(self.df_new['max'].count()):
