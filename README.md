@@ -1,10 +1,10 @@
-# Alphabeta
+# Hydrological Analysis of Concrtete Gravity Dam System (Alphabeta Dam System)
 
 Over the years we are witnessing that dams play multiple roles for people and governments in terms of hydropower, agriculture, drinking water, and so on. In order to do a proper project to have all the goals we have to consider all details of the topography of the location, purposes of governments at that rejoin, and national plans. 
 
 ## Detail of the Project
 
-this project named ALPHABETHA is not an exception. It has consisted of a Lake called ALPHA with a concrete gravity dam and a reservoir Pool BETA with an earthen ring dam. Actually, there are two electricity generation plants in this project. One is in the pool Betha named LHPP and the second one is called UHPP.
+This project has consisted of a Lake called ALPHA with a concrete gravity dam and a reservoir Pool BETA with an earthen ring dam. Actually, there are two electricity generation plants in this project. One is in the pool Betha named LHPP and the second one is called UHPP.
 In addition, the stage and volume hydrograph of pool Beta and the stage strong curve of alpha Lake is shown in the graph. These data are collected by the Water Administration of the country.
 
 ## Pre-processing of Flow Data
@@ -12,16 +12,18 @@ During the year different amounts of water are collected behind the dam from a r
 
 ## Goals
 By using graphs, tables, and also information on the question, we are able to achieve
-Pump storage volume in both lake and pool, time which pumps need for pumping, the maximum level of operational water which is called Zs, choosing the location of bottom outlet in the dam, annual storage volume of the lake and at the end, maximum and minimum of head of pumps, plot volume chart, plot the inflow/outflow of Pool Beta over the hours of the day, the turbine discharge in the LHPP (Omega I) height in specific periods, maximum head and minimum head for the UHPP (Omega II).
+Pump storage volume in both lake and pool, time which pumps need for pumping, the maximum level of operational water which is called Zs, choosing the location of bottom outlet in the dam, annual storage volume of the lake and at the end, maximum and minimum head of pumps, plot volume chart, plot the inflow/outflow of Pool Beta over the hours of the day, the turbine discharge in the LHPP (Omega I) height in specific periods, maximum and minimum head for the UHPP electricity generation plants (Omega II).
 all of results will be saved in result.txt file in root directory of project.
 
 ## Requirements
+pandas==1.5.2 
+matplotlib==3.6.2
+numpy==1.24.2 
 contourpy==1.0.7
 cycler==0.11.0
 fonttools==4.38.0
 kiwisolver==1.4.4
 matplotlib~=3.6.2
-numpy==1.24.2
 packaging==23.0
 Pillow==9.4.0
 pyparsing==3.0.9
@@ -29,8 +31,6 @@ python-dateutil==2.8.2
 pytz==2022.7.1
 scipy==1.10.0
 six==1.16.0
-pandas==1.5.2 
-matplotlib==3.6.2 
 graphics.py==5.0.1.post1 
 config==0.5.1
 
@@ -65,7 +65,7 @@ volume, and pump storage volume.
          Qout,alpha,may-aug = QLHPP + Qabc
 
 ## Code Diagram 
-![My Image](C:\Users\Hesam\PycharmProjects\shojaei_project\python_project_NAAM\Qualitative_diagram_of_code_blocks_(dependencies).jpg)
+![Digram](./img/diagram.jpg)
 ## Usage 
 this project calculate parameter below (it was show in calculation section) based on csv file contains data. 
 these files are identified in data directory and read with config module in python. you can replace it with path of your desired csv file.
@@ -339,6 +339,5 @@ annual_storage_volume: calculate annual storage volume of lake.
         return int(volume_max_height) - int(volume_min_height) - int(pump_volume)
 
 ```
-and in 'main.py' file just we use these modules to find our wanted information from data. also there is graphic display of results in window. and results will be saved in results.txt
-enjoy :)
+and in 'main.py' file just we use these modules to find our wanted information from data, and there is a graphic display of results in window as well. It is noticeable that the results will be saved in results.txt.
 
