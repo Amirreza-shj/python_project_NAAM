@@ -1,5 +1,5 @@
 """
-
+contains WaterLevel class
 """
 import numpy as np
 
@@ -14,33 +14,26 @@ class WaterLevel:
 
     def max_water_alpha_lake(self):
         """
-
-        :return:
+        :return: maximum of water level of alpha lake 
         """
         return self.my_data[self.my_data[:, 0] == 'ZO', :][0][2]
 
     def min_water_alpha_lake(self):
         """
-
-        :return:
+        :return: minimum of water level of alpha lake
         """
         return self.my_data[self.my_data[:, 0] == 'ZA', :][0][2]
 
     def bottom_outlet(self):
         """
-
-        :return:
+        :return: level of bottom outlet  
         """
         return self.my_data[self.my_data[:, 0] == 'ZT', :][0][2]
 
-    # Why max_height and min_height is not used?
-    def annual_storage_volume(self, max_height, min_height, pump_volume):
+    def annual_storage_volume(self, pump_volume):
         """
-
-        :param max_height:
-        :param min_height:
-        :param pump_volume:
-        :return:
+        :param pump_volume: entry of pumping volume
+        :return: calculate annual storage
         """
         volume_max_height = self.my_data[self.my_data[:, 0] == 'ZO', :][0][3]
         volume_min_height = self.my_data[self.my_data[:, 0] == 'ZA', :][0][3]
