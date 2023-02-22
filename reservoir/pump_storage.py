@@ -12,17 +12,21 @@ class PumpStorage:
 
     def __init__(self, csv_file):
         self.csv_file = csv_file
-        columns = ["hours", "volumes", "water_level"]
-        df = pd.read_csv(self.csv_file,
-                         names=columns,
-                         header=0,
-                         sep=",",
-                         encoding="latin1")
-        self.df_new = df
-        self.df_new['min'] = self.df_new.hours[(self.df_new.volumes.shift(1) >= self.df_new.volumes) & (
-                self.df_new.volumes.shift(-1) > self.df_new.volumes)]
-        self.df_new['max'] = self.df_new.hours[(self.df_new.volumes.shift(1) <= self.df_new.volumes) & (
-                self.df_new.volumes.shift(-1) < self.df_new.volumes)]
+        self.df_new = pd.read_csv(self.csv_file,
+                                  names=["hours", "volumes", "water_level"],
+                                  header=0,
+                                  sep=",",
+                                  encoding="latin1")
+        # save local minimum of plot of data
+        self.df_new['min'] = self.df_new.hours[
+            (self.df_new.volumes.shift(1) >= self.df_new.volumes) &
+            (self.df_new.volumes.shift(-1) > self.df_new.volumes)
+            ]
+        # save local maximum of plot of data
+        self.df_new['max'] = self.df_new.hours[
+            (self.df_new.volumes.shift(1) <= self.df_new.volumes) &
+            (self.df_new.volumes.shift(-1) < self.df_new.volumes)
+            ]
 
     def min_volume(self):
         """
@@ -60,7 +64,9 @@ class PumpStorage:
         """
         :return: plot the slop of volume chart
         """
-        dict_value = {0: 1.0, 3: 0.0, 5: -1.0, 7: -3.0, 8: -2.0, 9: 1.0, 12: -1.0, 14: 1.0, 18: -2.0, 19: -1.0, 21: 1.0}
+        dict_value = {
+            0: 1.0, 3: 0.0, 5: -1.0, 7: -3.0, 8: -2.0, 9: 1.0, 12: -1.0, 14: 1.0, 18: -2.0, 19: -1.0, 21: 1.0
+        }
         values = pd.Series(dict_value)
         slop_df = self.df_new['volumes'].diff() // self.df_new['hours'].diff()
         target = pd.concat([slop_df, values])
@@ -106,36 +112,58 @@ class PumpStorage:
         if self.df_new["max"][self.df_new["max"].notnull()].iloc[0] < \
                 self.df_new["min"][self.df_new["min"].notnull()].iloc[0]:
             for i in range(self.df_new['max'].count()):
-                if i == range(self.df_new['max'].count())[-1] and self.df_new["min"][self.df_new["min"].notnull()].iloc[
-                    -1] > self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]:
+                if i == range(self.df_new['max'].count())[-1] and \
+                        self.df_new["min"][self.df_new["min"].notnull()].iloc[-1] > \
+                        self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]:
                     result.append(
-                        f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[-1]} untill {self.df_new["hours"].iloc[3]}')
+                        f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[-1]} '
+                        f'until {self.df_new["hours"].iloc[3]}'
+                    )
                 else:
                     result.append(
-                        f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]} untill {self.df_new["max"][self.df_new["max"].notnull()].iloc[i + 1]}')
+                        f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]} '
+                        f'until {self.df_new["max"][self.df_new["max"].notnull()].iloc[i + 1]}'
+                    )
             for i in range(self.df_new['min'].count()):
                 result.append(
-                    f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[i]} untill {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]}')
-                if i == range(self.df_new['min'].count())[-1] and self.df_new["max"][self.df_new["max"].notnull()].iloc[
-                    -1] > self.df_new["min"][self.df_new["min"].notnull()].iloc[i]:
+                    f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[i]} '
+                    f'until {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]}'
+                )
+                if i == range(
+                        self.df_new['min'].count())[-1] and \
+                        self.df_new["max"][self.df_new["max"].notnull()].iloc[-1] > \
+                        self.df_new["min"][self.df_new["min"].notnull()].iloc[i]:
                     result.append(
-                        f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]} untill {self.df_new["hours"].iloc[-1]}')
+                        f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]} '
+                        f'until {self.df_new["hours"].iloc[-1]}'
+                    )
         else:
             for i in range(self.df_new['max'].count()):
-                if i == range(self.df_new['max'].count())[-1] and self.df_new["min"][self.df_new["min"].notnull()].iloc[
-                    -1] > self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]:
+                if i == range(
+                        self.df_new['max'].count())[-1] and \
+                        self.df_new["min"][self.df_new["min"].notnull()].iloc[-1] > \
+                        self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]:
                     result.append(
-                        f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[-1]} untill {self.df_new["hours"].iloc[-1]}')
+                        f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[-1]} '
+                        f'until {self.df_new["hours"].iloc[-1]}')
                 else:
                     result.append(
-                        f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]} untill {self.df_new["max"][self.df_new["max"].notnull()].iloc[i]}')
+                        f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]} '
+                        f'until {self.df_new["max"][self.df_new["max"].notnull()].iloc[i]}'
+                    )
             for i in range(self.df_new['min'].count()):
                 result.append(
-                    f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[i]} untill {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]}')
-                if i == range(self.df_new['min'].count())[-1] and self.df_new["max"][self.df_new["max"].notnull()].iloc[
-                    -1] > self.df_new["min"][self.df_new["min"].notnull()].iloc[i]:
+                    f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[i]} '
+                    f'until {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]}'
+                )
+                if i == range(
+                        self.df_new['min'].count())[-1] and \
+                        self.df_new["max"][self.df_new["max"].notnull()].iloc[-1] > \
+                        self.df_new["min"][self.df_new["min"].notnull()].iloc[i]:
                     result.append(
-                        f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]} untill {self.df_new["hours"].iloc[-1]}')
+                        f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]} '
+                        f'until {self.df_new["hours"].iloc[-1]}'
+                    )
         return result
 
 
@@ -146,13 +174,11 @@ class MonthVolume:
 
     def __init__(self, csv_file):
         self.csv_file = csv_file
-        columns = ["month", "volumes"]
-        df = pd.read_csv(self.csv_file,
-                         names=columns,
-                         header=0,
-                         sep=",",
-                         encoding="latin1")
-        self.df_new = df
+        self.df_new = pd.read_csv(self.csv_file,
+                                  names=["month", "volumes"],
+                                  header=0,
+                                  sep=",",
+                                  encoding="latin1")
 
     def volume_in_month(self, month):
         """

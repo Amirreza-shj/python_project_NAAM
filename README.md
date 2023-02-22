@@ -12,15 +12,26 @@ During the year different amounts of water are collected behind the dam from a r
 
 ## Goals
 By using graphs, tables, and also information on the question, we are able to achieve
-Pump storage volume in both lake and pool, time which pumps need for pumping, the maximum level of operational water which is called Zs, choosing the location of bottom outlet in the dam, annual storage volume of the lake and at the end, maximum and minimum of fall head of pumps, plot volume chart, plot the inflow/outflow of Pool Beta over the hours of the day, the turbine discharge in the LHPP (Omega I) height in specific periods, maximum head and minimum head for the UHPP (Omega II).
+Pump storage volume in both lake and pool, time which pumps need for pumping, the maximum level of operational water which is called Zs, choosing the location of bottom outlet in the dam, annual storage volume of the lake and at the end, maximum and minimum of head of pumps, plot volume chart, plot the inflow/outflow of Pool Beta over the hours of the day, the turbine discharge in the LHPP (Omega I) height in specific periods, maximum head and minimum head for the UHPP (Omega II).
 all of results will be saved in result.txt file in root directory of project.
 
 ## Requirements
-python==3.10.4 ,
-pandas==1.5.2 ,
-numpy==1.23.4 , 
-matplotlib==3.6.2 ,
-graphics.py==5.0.1.post1 ,
+contourpy==1.0.7
+cycler==0.11.0
+fonttools==4.38.0
+kiwisolver==1.4.4
+matplotlib~=3.6.2
+numpy==1.24.2
+packaging==23.0
+Pillow==9.4.0
+pyparsing==3.0.9
+python-dateutil==2.8.2
+pytz==2022.7.1
+scipy==1.10.0
+six==1.16.0
+pandas==1.5.2 
+matplotlib==3.6.2 
+graphics.py==5.0.1.post1 
 config==0.5.1
 
 
@@ -41,7 +52,7 @@ volume, and pump storage volume.
           Vannual, alpha = Vmax, alpha – Vmin, alpha – Vpump
 
 
-•	Maximum Fall Head for UHPP happens when Upper Reservoir in its maximum level and Lake Alpha in its minimum level.
+•	Maximum Head for UHPP happens when Upper Reservoir in its maximum level and Lake Alpha in its minimum level.
                               
                
                Δhmax, UHPP = hmax, up – hmin, alpha 
@@ -80,70 +91,95 @@ to start project.
  there is 'PumpStorage' class in 'PumpStorage' package. 
  ```python
 class PumpStorage:
-    def __init__(self,csv_file):
-        self.csv_file=csv_file         #csv_file address is entry of this class
-        columns=["hours","volumes","water_level"]    # get columns of csv_file
-        df = pd.read_csv(self.csv_file,
-                     names=columns,
-                     header=0,
-                     sep=",",
-                     encoding="latin1")    # df is object contains csv_file data
-        self.df_new = df
-#save local minimum of plot of data
-        self.df_new['min'] = self.df_new.hours[(self.df_new.volumes.shift(1) >= self.df_new.volumes) & (self.df_new.volumes.shift(-1) > self.df_new.volumes)]
-#save local maximum of plot of data
-        self.df_new['max'] = self.df_new.hours[(self.df_new.volumes.shift(1) <= self.df_new.volumes) & (self.df_new.volumes.shift(-1) < self.df_new.volumes)]
+    """
+    Author: Amirreza
+    """
+
+    def __init__(self, csv_file):
+        self.csv_file = csv_file
+        self.df_new = pd.read_csv(self.csv_file,
+                                  names=["hours", "volumes", "water_level"],
+                                  header=0,
+                                  sep=",",
+                                  encoding="latin1")
+        # save local minimum of plot of data
+        self.df_new['min'] = self.df_new.hours[
+            (self.df_new.volumes.shift(1) >= self.df_new.volumes) &
+            (self.df_new.volumes.shift(-1) > self.df_new.volumes)
+            ]
+        # save local maximum of plot of data
+        self.df_new['max'] = self.df_new.hours[
+            (self.df_new.volumes.shift(1) <= self.df_new.volumes) &
+            (self.df_new.volumes.shift(-1) < self.df_new.volumes)
+            ]
 ```
-minVolume and maxVolume and plotVolume are functions of  'PumpStorage' class.
-minVolume: returns minimum volume of pump storage
+min_volume and max_volume and plot_volume are functions of  'PumpStorage' class.
+min_volume: returns minimum volume of pump storage
 ```python
     def min_volume(self):
+        """
+        :return:  minimum volume of lake
+        """
         sorted_data = self.df_new.sort_values(["volumes"])
         min_volume = sorted_data["volumes"].min()
         try:
             result = int(min_volume)
             return result
-        except Exception as e : 
+        except Exception as e:
             return str(e)
 ```
-maxVolume:  returns maximum volume of pump storage
+max_volume:  returns maximum volume of pump storage
 ```python
     def max_volume(self):
+        """
+        :return: maximum volume of lake
+        """
         sorted_data = self.df_new.sort_values(["volumes"])
         max_volume = sorted_data["volumes"].max()
         try:
             result = int(max_volume)
             return result
-        except Exception as e : 
+        except Exception as e:
             return str(e)
 
 ```
-plotVolume: just show plot of data
+plot_volume: just show plot of data
 ```python
     def plot_volume(self):
+        """
+        :return: plot data volume based on data
+        """
         self.df_new.plot(x="hours", y="volumes")
-        plt.ion() # enables interactive mode
+        plt.ion()  # enables interactive mode
         plt.show()
 ```
 plot_slope: plot the inflow/outflow of Pool Beta over the hours of the day
 ```python
     def plot_slope(self):
-        dict_value={0:1.0,3:0.0,5:-1.0,7:-3.0,8:-2.0,9:1.0,12:-1.0,14:1.0,18:-2.0,19:-1.0,21:1.0}
+        """
+        :return: plot the slop of volume chart
+        """
+        dict_value = {
+            0: 1.0, 3: 0.0, 5: -1.0, 7: -3.0, 8: -2.0, 9: 1.0, 12: -1.0, 14: 1.0, 18: -2.0, 19: -1.0, 21: 1.0
+        }
         values = pd.Series(dict_value)
         slop_df = self.df_new['volumes'].diff() // self.df_new['hours'].diff()
-        target= pd.concat([slop_df,values])
-        tar_df=pd.DataFrame({"hours":target.index , "slopes":target.values})
-        tar_df_sort=tar_df.sort_values(["hours"])
-        tmp=tar_df_sort.loc[14]
+        target = pd.concat([slop_df, values])
+        tar_df = pd.DataFrame({"hours": target.index, "slopes": target.values})
+        tar_df_sort = tar_df.sort_values(["hours"])
+        tmp = tar_df_sort.loc[14]
         tar_df_sort.loc[14] = tar_df_sort.loc[32]
-        tar_df_sort.loc[32] = tmp 
+        tar_df_sort.loc[32] = tmp
         tar_df_sort.plot(x='hours', y='slopes')
-        plt.ion() # enables interactive mode
+        plt.ion()  # enables interactive mode
         plt.show()
 ```
 max_water_level: maximum level in Upper Reservoir and its time or period
 ```python
-    def max_water_level(self):
+   def max_water_level(self):
+        """
+        :return: maximum of water level of lake
+        """
         sorted_data = self.df_new.sort_values(["water_level"])
         max_level = sorted_data["water_level"].max()
         start_time = self.df_new.loc[self.df_new['water_level'] == max_level, 'hours'].iloc[0]
@@ -163,82 +199,145 @@ min_water_level: minimum level in Upper Reservoir and its time or period
         """
         sorted_data = self.df_new.sort_values(["water_level"])
         min_level = sorted_data["water_level"].min()
-        start_time = self.df_new.loc[self.df_new['water_level'] == min_level, 'hours'].iloc[0]
         end_time = self.df_new.loc[self.df_new['water_level'] == min_level, 'hours'].iloc[-1]
-        sorted_data = self.df_new.sort_values(["water_level"])
-        min_level = sorted_data["water_level"].min()
-        end_time = self.df_new.loc[self.df_new['water_level'] == min_level,'hours' ].iloc[-1]
-        target=[min_level,end_time]
+        target = [min_level, end_time]
         return target
 ```
-there is 'findPeaks' fuction which find point that derivative of plot is zero.
+there is 'find_peaks' fuction which find point that derivative of plot is zero.
 the goal of finding these points is identify ascending and descending range of plot.
 ```python
-    def findPeaks(self):
-        if self.df_new["max"][self.df_new["max"].notnull()].iloc[0] < self.df_new["min"][self.df_new["min"].notnull()].iloc[0]:
+    def find_peaks(self):
+        """
+        :return: the peaks of charts (mins and maxs) 
+        """
+        result = []
+        if self.df_new["max"][self.df_new["max"].notnull()].iloc[0] < \
+                self.df_new["min"][self.df_new["min"].notnull()].iloc[0]:
             for i in range(self.df_new['max'].count()):
-                if i == range(self.df_new['max'].count())[-1] and self.df_new["min"][self.df_new["min"].notnull()].iloc[-1] > self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]:
-                    print(f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[-1]} untill {self.df_new["hours"].iloc[-1]}')
+                if i == range(self.df_new['max'].count())[-1] and \
+                        self.df_new["min"][self.df_new["min"].notnull()].iloc[-1] > \
+                        self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]:
+                    result.append(
+                        f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[-1]} '
+                        f'until {self.df_new["hours"].iloc[3]}'
+                    )
                 else:
-                    print(f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]} untill {self.df_new["max"][self.df_new["max"].notnull()].iloc[i + 1]}')
+                    result.append(
+                        f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]} '
+                        f'until {self.df_new["max"][self.df_new["max"].notnull()].iloc[i + 1]}'
+                    )
             for i in range(self.df_new['min'].count()):
-                print(f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[i]} untill {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]}')
-                if i == range(self.df_new['min'].count())[-1] and self.df_new["max"][self.df_new["max"].notnull()].iloc[-1] > self.df_new["min"][self.df_new["min"].notnull()].iloc[i]:
-                    print(f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]} untill {self.df_new["hours"].iloc[-1]}')
+                result.append(
+                    f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[i]} '
+                    f'until {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]}'
+                )
+                if i == range(
+                        self.df_new['min'].count())[-1] and \
+                        self.df_new["max"][self.df_new["max"].notnull()].iloc[-1] > \
+                        self.df_new["min"][self.df_new["min"].notnull()].iloc[i]:
+                    result.append(
+                        f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]} '
+                        f'until {self.df_new["hours"].iloc[-1]}'
+                    )
         else:
             for i in range(self.df_new['max'].count()):
-                if i == range(self.df_new['max'].count())[-1] and self.df_new["min"][self.df_new["min"].notnull()].iloc[-1] > self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]:
-                    print(f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[-1]} untill {self.df_new["hours"].iloc[-1]}')
+                if i == range(
+                        self.df_new['max'].count())[-1] and \
+                        self.df_new["min"][self.df_new["min"].notnull()].iloc[-1] > \
+                        self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]:
+                    result.append(
+                        f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[-1]} '
+                        f'until {self.df_new["hours"].iloc[-1]}')
                 else:
-                    print(f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]} untill {self.df_new["max"][self.df_new["max"].notnull()].iloc[i]}')
+                    result.append(
+                        f'time of pumping: {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]} '
+                        f'until {self.df_new["max"][self.df_new["max"].notnull()].iloc[i]}'
+                    )
             for i in range(self.df_new['min'].count()):
-                print(f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[i]} untill {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]}')
-                if i == range(self.df_new['min'].count())[-1] and self.df_new["max"][self.df_new["max"].notnull()].iloc[-1] > self.df_new["min"][self.df_new["min"].notnull()].iloc[i]:
-                    print(f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]} untill {self.df_new["hours"].iloc[-1]}')
+                result.append(
+                    f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[i]} '
+                    f'until {self.df_new["min"][self.df_new["min"].notnull()].iloc[i]}'
+                )
+                if i == range(
+                        self.df_new['min'].count())[-1] and \
+                        self.df_new["max"][self.df_new["max"].notnull()].iloc[-1] > \
+                        self.df_new["min"][self.df_new["min"].notnull()].iloc[i]:
+                    result.append(
+                        f'time of turbining: {self.df_new["max"][self.df_new["max"].notnull()].iloc[-1]} '
+                        f'until {self.df_new["hours"].iloc[-1]}'
+                    )
+        return result
 ```
 also there is another class for calculating volume in specific month 
 ```python
 class MonthVolume:
+    """
+    Author: Navid
+    """
+
     def __init__(self, csv_file):
         self.csv_file = csv_file
-        columns = ["month", "volumes"]
-        df = pd.read_csv(self.csv_file,
-                         names=columns,
-                         header=0,
-                         sep=",",
-                         encoding="latin1")
-        self.df_new = df
+        self.df_new = pd.read_csv(self.csv_file,
+                                  names=["month", "volumes"],
+                                  header=0,
+                                  sep=",",
+                                  encoding="latin1")
 ```
 volume_in_month: function calculate volume in month that get as parameter
 ```python
     def volume_in_month(self, month):
+        """
+        :param month: entry is name of month 
+        :return: calculate volume in one moth
+        """
         volume = int(self.df_new.loc[self.df_new['month'] == month, 'volumes'].iloc[0])
         return volume * 30 * 24 * 3600
 ```
 
 in 'WaterLevel' module there is 'WaterLevel' class.
 ```python
-class WaterLevel():
+class WaterLevel:
+    """
+    Author: Navid
+    """
     def __init__(self, csv_file):
-        self.csv_file = csv_file 
-        self.my_data = np.loadtxt(self.csv_file,dtype=str,  delimiter=',',skiprows=0)   #load csv_file in numpy module
+        self.csv_file = csv_file
+        self.my_data = np.loadtxt(self.csv_file, dtype=str, delimiter=',', skiprows=0)
+
 ```
-there is 4 function in this class 'maxWaterAlphaLake' , 'annualStorageVolume' , 'bottomOutlet' , 'minWaterAlphaLake'.
-maxWaterAlphaLake: calculate maximum of alpha lake.
-minWaterAlphaLake:  calculate minimum of alpha lake.
-bottomOutlet: find bottom outlet of alpha lake.
-annualStorageVolume: calculate annual storage volume of lake.
+there is 4 function in this class 'max_water_alpha_lake' , 'annual_storage_volume' , 'bottom_outlet' , 'min_water_alpha_lake'.
+max_water_alpha_lake: calculate maximum of alpha lake.
+min_water_alpha_lake:  calculate minimum of alpha lake.
+bottom_outlet: find bottom outlet of alpha lake.
+annual_storage_volume: calculate annual storage volume of lake.
 ```python
-    def maxWaterAlphaLake(self):
+    def max_water_alpha_lake(self):
+        """
+        :return: maximum of water level of alpha lake 
+        """
         return self.my_data[self.my_data[:, 0] == 'ZO', :][0][2]
-    def minWaterAlphaLake(self):
+
+    def min_water_alpha_lake(self):
+        """
+        :return: minimum of water level of alpha lake
+        """
         return self.my_data[self.my_data[:, 0] == 'ZA', :][0][2]
-    def bottomOutlet(self):
+
+    def bottom_outlet(self):
+        """
+        :return: level of bottom outlet  
+        """
         return self.my_data[self.my_data[:, 0] == 'ZT', :][0][2]
-    def annualStorageVolume(self,pumpvolume):
-        volume_maxheight = self.my_data[self.my_data[:, 0] == 'ZO', :][0][3]
-        volume_minheight = self.my_data[self.my_data[:, 0] == 'ZA', :][0][3]
-        return int(volume_maxheight) - int(volume_minheight) - int(pumpvolume)
+
+    def annual_storage_volume(self, pump_volume):
+        """
+        :param pump_volume: entry of pumping volume
+        :return: calculate annual storage
+        """
+        volume_max_height = self.my_data[self.my_data[:, 0] == 'ZO', :][0][3]
+        volume_min_height = self.my_data[self.my_data[:, 0] == 'ZA', :][0][3]
+        return int(volume_max_height) - int(volume_min_height) - int(pump_volume)
+
 ```
 and in 'main.py' file just we use these modules to find our wanted information from data. also there is graphic display of results in window. and results will be saved in results.txt
 enjoy :)
