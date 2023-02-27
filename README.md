@@ -1,4 +1,4 @@
-# Hydrological Analysis of Concrete Gravity Dam System (Alphabeta Dam System)
+# Hydrological Analysis of the Concrete Gravity Dam System (Alphabeta Dam System)
 
 Over the years we are witnessing that dams play multiple roles for people and governments in terms of hydropower, agriculture, drinking water, and so on. In order to do a proper project to have all the goals we have to consider all details of the topography of the location, purposes of governments at that rejoin, and national plans. 
 
