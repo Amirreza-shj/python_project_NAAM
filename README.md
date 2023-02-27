@@ -1,4 +1,4 @@
-# Hydrological Analysis of Concrtete Gravity Dam System (Alphabeta Dam System)
+# Hydrological Analysis of Concrete Gravity Dam System (Alphabeta Dam System)
 
 Over the years we are witnessing that dams play multiple roles for people and governments in terms of hydropower, agriculture, drinking water, and so on. In order to do a proper project to have all the goals we have to consider all details of the topography of the location, purposes of governments at that rejoin, and national plans. 
 
@@ -8,12 +8,12 @@ This project has consisted of a Lake called ALPHA with a concrete gravity dam an
 In addition, the stage and volume hydrograph of pool Beta and the stage strong curve of alpha Lake is shown in the graph. These data are collected by the Water Administration of the country.
 
 ## Pre-processing of Flow Data
-During the year different amounts of water are collected behind the dam from a river called Alphabeta Creek and they are shown in a Table.
+During the year different amounts of water are collected behind the dam from a river called Alphabeta Creek, and they are shown in a Table.
 
 ## Goals
 By using graphs, tables, and also information on the question, we are able to achieve
 Pump storage volume in both lake and pool, time which pumps need for pumping, the maximum level of operational water which is called Zs, choosing the location of bottom outlet in the dam, annual storage volume of the lake and at the end, maximum and minimum head of pumps, plot volume chart, plot the inflow/outflow of Pool Beta over the hours of the day, the turbine discharge in the LHPP (Omega I) height in specific periods, maximum and minimum head for the UHPP electricity generation plants (Omega II).
-all of results will be saved in result.txt file in root directory of project.
+All of the results will be saved in result.txt file in the root directory of the project.
 
 ## Requirements
 pandas==1.5.2 
@@ -36,18 +36,17 @@ config==0.5.1
 
 
 ## Calculation
-•	Pump storage volume is the volume of the reservoir (excluding dead volume) that is used for storing the potential energy. In this case, the potential energy is being stored in the Beta Pool. So this volume can be seen as a difference between the maximum and minimum the volume of water in the Beta Pool (up)
+•	Pump storage volume is the volume of the reservoir (excluding dead volume) that is used for storing the potential energy. In this case, the potential energy is being stored in the Beta Pool. So this volume can be seen as a difference between the maximum and minimum volume of water in the Beta Pool (up)
 
         Vpump = Vmax, up – Vmin, up
 
-•	that Maximum operational water level in a reservoir can be seen as the level of its overflow gate.
+•	That Maximum operational water level in a reservoir can be seen as the level of its overflow gate.
 
-•	Bottom Outlet is located at the deepest drawdown level
+•	Bottom Outlet is located at the deepest drawdown level.
 
 
 
-•	Annual storage volume of a reservoir is the volume of the reservoir without dead
-volume, and pump storage volume.
+•	Annual storage volume of a reservoir is the volume of the reservoir without dead volume, and pump storage volume.
 
           Vannual, alpha = Vmax, alpha – Vmin, alpha – Vpump
 
@@ -59,7 +58,7 @@ volume, and pump storage volume.
 
                Δhmin, UHPP = hmin, up – hmax, alpha 
 
-• Turbine discharge in the LHPP (Omega I) height between may untill augest 
+• Turbine discharge in the LHPP (Omega I) height between May until Augest. 
   
          Vout,alpha,may-aug = Vannal-alpha + Vin,alpha-may-aug
          Qout,alpha,may-aug = QLHPP + Qabc
@@ -67,8 +66,8 @@ volume, and pump storage volume.
 ## Code Diagram 
 ![Digram](./img/diagram.jpg)
 ## Usage 
-this project calculate parameter below (it was show in calculation section) based on csv file contains data. 
-these files are identified in data directory and read with config module in python. you can replace it with path of your desired csv file.
+This project calculate parameter below (it was show in calculation section) based on csv file contains data. 
+These files are identified in data directory and read with config module in python. You can replace it with path of your desired csv file.
 
 ```python
     pump_storage = PumpStorage(CSV_PATH['reservoir'])
@@ -76,19 +75,19 @@ these files are identified in data directory and read with config module in pyth
     month_volume = MonthVolume(CSV_PATH['inflow_alpha_creek'])
 ```
 
-after activating virtual env of this project, you have to install dependancies which is stored in requirements.txt file with this command:
+After activating virtual env of this project, you have to install dependencies which are stored in requirements.txt file with this command:
 ```python
     pip install -r requirements.txt
 ```
-just run:
+Just run:
 ```python
     python main.py
 ```
-to start project.
+To start the project.
 
 ## Code description
-'main.py' file use two python module. 'PumpStorage' is module contains class and fuctions to calculate space and storage of pump volume and also there is another class called MonthVolume to calculate volume of lake in specefic month and 'WaterLevel' package contains class and fuctions to calculate level of water.
- there is 'PumpStorage' class in 'PumpStorage' package. 
+'main.py' file use two python modules. 'PumpStorage' is module contains classes and functions to calculate space and storage of pump volume and also there is another class called MonthVolume to calculate volume of lake in specefic month and 'WaterLevel' package contains class and functions to calculate level of water.
+There is 'PumpStorage' class in 'PumpStorage' package. 
  ```python
 class PumpStorage:
     """
@@ -203,8 +202,8 @@ min_water_level: minimum level in Upper Reservoir and its time or period
         target = [min_level, end_time]
         return target
 ```
-there is 'find_peaks' fuction which find point that derivative of plot is zero.
-the goal of finding these points is identify ascending and descending range of plot.
+There is 'find_peaks' function which finds a point the derivative of the plot is zero.
+The goal of finding these points is to identify an ascending and descending range of plot.
 ```python
     def find_peaks(self):
         """
@@ -268,7 +267,7 @@ the goal of finding these points is identify ascending and descending range of p
                     )
         return result
 ```
-also there is another class for calculating volume in specific month 
+Also, there is another class for calculating volume in a specific month.
 ```python
 class MonthVolume:
     """
@@ -283,7 +282,7 @@ class MonthVolume:
                                   sep=",",
                                   encoding="latin1")
 ```
-volume_in_month: function calculate volume in month that get as parameter
+volume_in_month: function calculate volume in month that get as parameter.
 ```python
     def volume_in_month(self, month):
         """
@@ -294,7 +293,7 @@ volume_in_month: function calculate volume in month that get as parameter
         return volume * 30 * 24 * 3600
 ```
 
-in 'WaterLevel' module there is 'WaterLevel' class.
+In 'WaterLevel' module there is 'WaterLevel' class.
 ```python
 class WaterLevel:
     """
@@ -305,11 +304,11 @@ class WaterLevel:
         self.my_data = np.loadtxt(self.csv_file, dtype=str, delimiter=',', skiprows=0)
 
 ```
-there is 4 function in this class 'max_water_alpha_lake' , 'annual_storage_volume' , 'bottom_outlet' , 'min_water_alpha_lake'.
-max_water_alpha_lake: calculate maximum of alpha lake.
-min_water_alpha_lake:  calculate minimum of alpha lake.
-bottom_outlet: find bottom outlet of alpha lake.
-annual_storage_volume: calculate annual storage volume of lake.
+There are 4 functions in this class 'max_water_alpha_lake', 'annual_storage_volume', 'bottom_outlet', and 'min_water_alpha_lake'.
+max_water_alpha_lake: to calculate the maximum of the alpha lake.
+min_water_alpha_lake:  to calculate the minimum of the alpha lake.
+bottom_outlet: to find the bottom outlet of the alpha lake.
+annual_storage_volume: to calculate the annual storage volume of the lake.
 ```python
     def max_water_alpha_lake(self):
         """
@@ -339,5 +338,5 @@ annual_storage_volume: calculate annual storage volume of lake.
         return int(volume_max_height) - int(volume_min_height) - int(pump_volume)
 
 ```
-and in 'main.py' file just we use these modules to find our wanted information from data, and there is a graphic display of results in window as well. It is noticeable that the results will be saved in results.txt.
+And in 'main.py' file these modules are just used to find the desired information from data, and there is a graphic display of results in the window as well. It is noticeable that the results will be saved in results.txt.
 
