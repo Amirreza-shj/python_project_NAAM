@@ -86,7 +86,7 @@ Just run:
 To start the project.
 
 ## Code description
-'main.py' file use two python modules. 'PumpStorage' is module contains classes and functions to calculate space and storage of pump volume and also there is another class called MonthVolume to calculate volume of lake in specefic month and 'WaterLevel' package contains class and functions to calculate level of water.
+'main.py' file use two python modules. 'PumpStorage' is module contains classes and functions to calculate space and storage of pump volume and also there is another class called MonthVolume to calculate volume of lake in specific month and 'WaterLevel' package contains class and functions to calculate level of water.
 There is 'PumpStorage' class in 'PumpStorage' package. 
  ```python
 class PumpStorage:
@@ -112,7 +112,7 @@ class PumpStorage:
             (self.df_new.volumes.shift(-1) < self.df_new.volumes)
             ]
 ```
-min_volume and max_volume and plot_volume are functions of  'PumpStorage' class.
+min_volume and max_volume and plot_volume are functions of 'PumpStorage' class.
 min_volume: returns minimum volume of pump storage
 ```python
     def min_volume(self):
@@ -287,7 +287,7 @@ volume_in_month: function calculate volume in month that get as parameter.
     def volume_in_month(self, month):
         """
         :param month: entry is name of month 
-        :return: calculate volume in one moth
+        :return: calculate volume in one month
         """
         volume = int(self.df_new.loc[self.df_new['month'] == month, 'volumes'].iloc[0])
         return volume * 30 * 24 * 3600
