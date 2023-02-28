@@ -11,8 +11,7 @@ In addition, the stage and volume hydrograph of pool Beta and the stage strong c
 During the year different amounts of water are collected behind the dam from a river called Alphabeta Creek, and they are shown in a Table.
 
 ## Goals
-By using graphs, tables, and also information on the question, we are able to achieve
-Pump storage volume in both lake and pool, time which pumps need for pumping, the maximum level of operational water which is called Zs, choosing the location of bottom outlet in the dam, annual storage volume of the lake and at the end, maximum and minimum head of pumps, plot volume chart, plot the inflow/outflow of Pool Beta over the hours of the day, the turbine discharge in the LHPP (Omega I) height in specific periods, maximum and minimum head for the UHPP electricity generation plants (Omega II).
+By using graphs, tables, and also information on the question, we are able to achieve pump storage volume in both lake and pool, time which pumps need for pumping, the maximum level of operational water which is called Zs, choosing the location of bottom outlet in the dam, annual storage volume of the lake and at the end, maximum and minimum head of pumps, plot volume chart, plot the inflow/outflow of Pool Beta over the hours of the day, the turbine discharge in the LHPP (Omega I) height in specific periods, maximum and minimum head for the UHPP electricity generation plants (Omega II).
 All of the results will be saved in result.txt file in the root directory of the project.
 
 ## Requirements
@@ -36,7 +35,7 @@ config==0.5.1
 
 
 ## Calculation
-•	Pump storage volume is the volume of the reservoir (excluding dead volume) that is used for storing the potential energy. In this case, the potential energy is being stored in the Beta Pool. So this volume can be seen as a difference between the maximum and minimum volume of water in the Beta Pool (up)
+•	Pump storage volume is the volume of the reservoir (excluding dead volume) that is used for storing the potential energy. In this case, the potential energy is being stored in the Beta Pool. So this volume can be seen as a difference between the maximum and minimum volume of water in the Beta Pool (up).
 
         Vpump = Vmax, up – Vmin, up
 
